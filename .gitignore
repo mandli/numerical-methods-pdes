@@ -60,3 +60,6 @@ target/
 
 # IPython notebooks
 .ipynb_checkpoints
+
+# Image base
+images/*.afdesign
