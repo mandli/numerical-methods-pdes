@@ -63,3 +63,9 @@ target/
 
 # Image base
 images/*.afdesign
+
+# Jupyter Notebook Specific minutia
+*.slides.html
+
+# Course ignores
+*-template.ipynb
