@@ -1,12 +1,3 @@
-! ============================================================================
-!  Program:     matrix_multiply I
-!  File:        untitled.f95
-!  Created:     2009-03-25
-!  Author:      Kyle Mandli
-! ============================================================================
-!  Description:  Simple matrix multiply, fortran style
-! ============================================================================
-
 real function matrix_multiply_test(N,method)
 
     use mod_rand
@@ -65,16 +56,19 @@ end function matrix_multiply_test
     
 program matrix_multiply
     
+    use omp_lib
+
     implicit none
     
-    integer :: N,method
-    character(len=10) :: input_N, input_method
+    integer :: N, method, threads
+    character(len=10) :: input_N, input_method, input_threads
     real :: matrix_multiply_test, time
     
     select case(iargc())
         case(0)
             N = 1000
             method = 1
+            threads = 1
         case(1)
             call getarg(1,input_N)
             read(input_N,'(I10)') N
@@ -84,12 +78,21 @@ program matrix_multiply
             call getarg(2,input_method)
             read(input_N,'(I10)') N
             read(input_method,'(I10)') method
+        case(3)
+            call getarg(1,input_N)
+            call getarg(2,input_method)
+            call getarg(3,input_threads)
+            read(input_N,'(I10)') N
+            read(input_method,'(I10)') method
+            read(input_threads,'(I10)') threads
         case default
             print *, "***ERROR*** Too many arguments!"
             stop
     end select
     
-    time = matrix_multiply_test(N,method)
+    !$ call omp_set_num_threads(threads)
+
+    time = matrix_multiply_test(N, method)
     
     print '("Timing for ",i5,"x",i5," matrices: ",f10.5," s")',N,N,time
     
