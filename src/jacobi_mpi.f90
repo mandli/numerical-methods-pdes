@@ -11,13 +11,14 @@ program jacobi_mpi
 
     real (kind=8), parameter :: alpha = 0.d0, beta = 3.d0
 
-    integer :: i, num_iterations, start, end, points_per_task, task_id, N
+    integer :: i, start, end, points_per_task, task_id, N
     integer :: error, num_tasks, my_id, req1, req2
     integer, dimension(MPI_STATUS_SIZE) :: mpi_status
-    real (kind = 8), dimension(:), allocatable :: f, u, u_old
-    real (kind = 8) :: x, du_max_task, du_max_global, dx, tolerance
+    real(kind=8), dimension(:), allocatable :: f, u, u_old
+    real(kind=8) :: x, du_max_task, du_max_global, dx, tolerance
 
-    integer, parameter :: MAX_ITERATIONS = 100000
+    integer(kind=8) :: num_iterations
+    integer(kind=8), parameter :: MAX_ITERATIONS = 2**32_8
     integer, parameter :: PRINT_INTERVAL = 5000
 
     ! Initialize MPI; get total number of tasks and ID of this task
@@ -57,7 +58,9 @@ program jacobi_mpi
 
     ! This makes the indices run from istart-1 to end+1
     ! This is more or less cosmetic, but makes things easier to think about
-    allocate(f(start - 1:end + 1), u(start - 1:end + 1), u_old(start - 1:end + 1))
+    allocate(f(start - 1:end + 1)
+    allocate(u(start - 1:end + 1))
+    allocate(u_old(start - 1:end + 1)))
 
     ! Each task sets its own, independent array
     do i = start, end
@@ -65,7 +68,7 @@ program jacobi_mpi
         ! so re-using the scalar variable x from one loop iteration to
         ! the next does not produce a race condition.
         x = dx * real(i, kind=8)
-        f(i) = exp(x)               ! Source term
+        f(i) = exp(x)                        ! RHS
         u(i) = alpha + x * (beta - alpha)    ! Initial guess
     end do
     
@@ -95,11 +98,13 @@ program jacobi_mpi
 
         if (my_id > 0) then
             ! Send left endpoint value to process to the "left"
+            ! Note that this is a "non-blocking send"
             call mpi_isend(u_old(start), 1, MPI_DOUBLE_PRECISION, my_id - 1, &
                 1, MPI_COMM_WORLD, req1, error)
         end if
         if (my_id < num_tasks - 1) then
             ! Send right endpoint value to process on the "right"
+            ! Note that this is a "non-blocking send"
             call mpi_isend(u_old(end), 1, MPI_DOUBLE_PRECISION, my_id + 1, &
                 2, MPI_COMM_WORLD, req2, error)
         end if
@@ -165,6 +170,17 @@ program jacobi_mpi
 
     ! Synchronize to keep the next part from being non-deterministic
     call mpi_barrier(MPI_COMM_WORLD, error)
+
+    ! Check to make sure that we were successful
+    if (num_iterations >= MAX_ITERATIONS) then
+        if (my_id == 0) then
+            print *, "Jacobi failed to converge!"
+            print *, "Reached du_max = ", du_max_global
+            print *, "Tolerance = ", tolerance
+        end if
+        call mpi_finalize(error)
+        stop
+    endif
 
     ! Have each task output to a file in sequence, using messages to
     ! coordinate
