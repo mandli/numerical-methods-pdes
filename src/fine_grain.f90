@@ -14,7 +14,7 @@ program fine_grain
     
     ! Specify number of threads to use:
     nthreads = 1       ! need this value in serial mode
-    !$ nthreads = 4    
+    !$ nthreads = 1    
     !$ call omp_set_num_threads(nthreads)
     !$ print "('Using OpenMP with ',i3,' threads')", nthreads
 
