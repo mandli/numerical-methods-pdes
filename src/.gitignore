@@ -1,0 +1,18 @@
+# Binaries
+coarse_grain
+compute_pi
+demo2
+fine_grain
+hello_world_mpi
+hello_world_omp
+jacobi_mpi
+jacobi_omp1
+jacobi_omp2
+mat_mult
+note_passing
+yeval
+
+# Output files
+jacobi_omp1.txt
+jacobi_omp2.txt
+jacobi_mpi.txt
