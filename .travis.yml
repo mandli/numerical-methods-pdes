@@ -1,0 +1,16 @@
+language: python
+sudo: true
+
+python:
+  - "2.7"
+  - "3.6"
+
+before_install:
+  - sudo apt-get update -qq
+
+install:
+  - pip install -U pip setuptools # Travis breaks without this
+  - pip install -r requirements.txt
+
+script:
+  - python test.py
