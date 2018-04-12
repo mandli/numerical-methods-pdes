@@ -26,7 +26,8 @@ program jacobi_omp1
     beta = 3.d0
 
     ! Specify number of threads to use:
-    num_threads = 4
+    num_threads = 1
+    !$ num_threads = 4
     !$ call omp_set_num_threads(num_threads)
     !$ print "('Using OpenMP with ',i3,' threads')", num_threads
 

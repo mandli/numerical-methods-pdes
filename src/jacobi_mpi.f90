@@ -58,9 +58,9 @@ program jacobi_mpi
 
     ! This makes the indices run from istart-1 to end+1
     ! This is more or less cosmetic, but makes things easier to think about
-    allocate(f(start - 1:end + 1)
+    allocate(f(start - 1:end + 1))
     allocate(u(start - 1:end + 1))
-    allocate(u_old(start - 1:end + 1)))
+    allocate(u_old(start - 1:end + 1))
 
     ! Each task sets its own, independent array
     do i = start, end
