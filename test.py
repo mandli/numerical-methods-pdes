@@ -16,6 +16,7 @@ else:
 
 # Note we leave out the python intro as there are purposeful exceptions
 notebooks = glob.glob("*.ipynb")
+notebooks.remove('01_python.ipynb')
 
 def _notebook_run(path):
     """Execute a notebook via nbconvert and collect output.
