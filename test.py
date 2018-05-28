@@ -14,11 +14,16 @@ if sys.version_info >= (3,0):
 else:
     kernel = 'python2'
 
-# Note we leave out the python intro as there are purposeful exceptions and
-# the finite volume lecture as there are packages that are not installed.
+# Construct notebook list
 notebooks = glob.glob("*.ipynb")
+# Note we leave out the python intro as there are purposeful exceptions
 notebooks.remove('01_python.ipynb')
+# The following either require additional packages (FV and FE), do not entirely
+# work yet (spectral), or do not contain any substantial Python code
 notebooks.remove('13_finite_volume.ipynb')
+notebooks.remove('14_spectral.ipynb')
+notebooks.remove('15_finite_element.ipynb')
+notebooks.remove('16_performance.ipynb')
 
 def _notebook_run(path):
     """Execute a notebook via nbconvert and collect output.
