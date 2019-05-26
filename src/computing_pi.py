@@ -28,8 +28,8 @@ points_per_proc = (N + size - 1) / size
 if rank == 0:
     print("Points/process = %s" % points_per_proc)
 
-start = rank * points_per_proc + 1
-end = min((rank + 1) * points_per_proc, N)
+start = int(rank * points_per_proc + 1)
+end = int(min((rank + 1) * points_per_proc, N))
 
 print("Process %s will take i = %s through i = %s" % (rank, start, end))
 
