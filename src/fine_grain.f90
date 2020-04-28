@@ -14,12 +14,12 @@ program fine_grain
     
     ! Specify number of threads to use:
     nthreads = 1       ! need this value in serial mode
-    !$ nthreads = 4
+    !$ nthreads = 8
     !$ call omp_set_num_threads(nthreads)
     !$ print "('Using OpenMP with ',i3,' threads')", nthreads
 
     ! Specify number of threads to use:
-    !$ call omp_set_num_threads(4)
+    !$ call omp_set_num_threads(nthreads)
  
     ! initialize x:
     !$omp parallel do 
@@ -37,7 +37,7 @@ program fine_grain
         norm = norm + abs(x(i))
     enddo
 
-     !$omp barrier   ! not needed (implicit)
+    !$omp barrier   ! not needed (implicit)
 
     !$omp do reduction(+ : ynorm)
     do i=1,n
